@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Outdated Browser
-Plugin URI: http://presstify.com/policy/addons/outdated_browser
+Plugin URI: https://presstify.com/plugins/outdated-browser
 Description: Avertisseur de Navigateur déprécié
 Version: 1.0.0
 Author: Milkcreation
