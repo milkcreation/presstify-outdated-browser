@@ -1,9 +1,10 @@
 <?php
+
 /*
 Plugin Name: Outdated Browser
 Plugin URI: https://presstify.com/plugins/outdated-browser
 Description: Avertisseur de Navigateur déprécié
-Version: 1.0.1
+Version: 1.1.0
 Author: Milkcreation
 Author URI: http://milkcreation.fr
 */
@@ -21,10 +22,12 @@ Author URI: http://milkcreation.fr
 
 namespace tiFy\Plugins\OutdatedBrowser;
 
-class OutdatedBrowser extends \tiFy\App\Plugin
+use tiFy\App\Plugin;
+
+class OutdatedBrowser extends Plugin
 {
     /**
-     * CONSTRUCTEUR
+     * CONSTRUCTEUR.
      *
      * @return void
      */
@@ -32,31 +35,26 @@ class OutdatedBrowser extends \tiFy\App\Plugin
     {
         parent::__construct();
 
-        // Déclaration des événements
         $this->appAddAction('init');
         $this->appAddAction('wp_enqueue_scripts');
         $this->appAddAction('wp_footer', null, 99);
     }
 
     /**
-     * EVENEMENTS
-     */
-    /**
-     * Initialisation globale
+     * Initialisation globale.
      *
      * @return void
      */
     final public function init()
     {
-        // Déclaration des scripts
         \wp_register_style(
-            'outdated-browser',
+            'tiFyPluginOutdatedBrowser',
             '//cdn.rawgit.com/burocratik/outdated-browser/develop/outdatedbrowser/outdatedbrowser.min.css',
             [],
             '1.1.2'
         );
         \wp_register_script(
-            'outdated-browser',
+            'tiFyPluginOutdatedBrowser',
             '//cdn.rawgit.com/burocratik/outdated-browser/develop/outdatedbrowser/outdatedbrowser.min.js',
             ['jquery'],
             '1.1.2',
@@ -65,19 +63,20 @@ class OutdatedBrowser extends \tiFy\App\Plugin
     }
 
     /**
-     * Mise en file des scripts de l'interface utilisateurs
+     * Mise en file des scripts de l'interface utilisateurs.
      *
      * @return void
      */
-    /** == Mise en file des scripts == **/
     final public function wp_enqueue_scripts()
     {
-        \wp_enqueue_style('outdated-browser');
-        \wp_enqueue_script('outdated-browser');
+        if ($this->appConfig('wp_enqueue_scripts', true)) : 
+            \wp_enqueue_style('tiFyPluginOutdatedBrowser');
+            \wp_enqueue_script('tiFyPluginOutdatedBrowser');
+        endif;
     }
 
     /**
-     * Scripts du pied de page
+     * Scripts du pied de page.
      *
      * @return void
      */
@@ -95,10 +94,10 @@ class OutdatedBrowser extends \tiFy\App\Plugin
         $output .= "\t<script type=\"text/javascript\">/* <![CDATA[ */\n";
         $output .= "\t\tjQuery( document ).ready( function($) {\n";
         $output .= "\t\t\toutdatedBrowser({\n";
-        $output .= "\t\t\t\tbgColor: '" . self::tFyAppConfig('bgColor') . "',\n";
-        $output .= "\t\t\t\tcolor: '" . self::tFyAppConfig('color') . "',\n";
-        $output .= "\t\t\t\tlowerThan: '" . self::tFyAppConfig('lowerThan') . "',\n";
-        $output .= "\t\t\t\tlanguagePath: '" . self::tFyAppConfig('languagePath') . "'\n";
+        $output .= "\t\t\t\tbgColor: '" . $this->appConfig('bgColor') . "',\n";
+        $output .= "\t\t\t\tcolor: '" . $this->appConfig('color') . "',\n";
+        $output .= "\t\t\t\tlowerThan: '" . $this->appConfig('lowerThan') . "',\n";
+        $output .= "\t\t\t\tlanguagePath: '" . $this->appConfig('languagePath') . "'\n";
         $output .= "\t\t\t});\n";
         $output .= "\t\t});\n";
         $output .= "\t/* ]]> */</script>\n";

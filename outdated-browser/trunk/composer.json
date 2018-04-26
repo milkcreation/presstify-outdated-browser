@@ -10,7 +10,7 @@
     "browser compatibility"
   ],
   "homepage": "https://svn.tigreblanc.fr/presstify-plugins/outdated-browser",
-  "time": "2018-03-29",
+  "time": "2018-04-26",
   "license": "proprietary",
   "authors": [
     {
@@ -27,7 +27,7 @@
   ],
   "require": {
     "composer/installers": "~1.0",
-    "presstify/framework": "^1.4"
+    "presstify/framework": "^1.5"
   },
   "autoload": {
     "psr-4": {
