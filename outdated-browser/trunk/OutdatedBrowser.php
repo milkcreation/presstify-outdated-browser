@@ -1,13 +1,17 @@
 <?php
 
-/*
-Plugin Name: Outdated Browser
-Plugin URI: https://presstify.com/plugins/outdated-browser
-Description: Avertisseur de Navigateur déprécié
-Version: 1.1.0
-Author: Milkcreation
-Author URI: http://milkcreation.fr
-*/
+/**
+ * @name Outdated Browser
+ * @desc Extension PresstiFy de contrôle et de mise à jour de navigateur internet obsolète..
+ * @author Jordy Manner <jordy@milkcreation.fr>
+ * @package presstiFy
+ * @namespace \tiFy\Plugins\AdminUi
+ * @version 2.0.0
+ */
+
+namespace tiFy\Plugins\OutdatedBrowser;
+
+use tiFy\Apps\AppController;
 
 /**
  * @see http://outdatedbrowser.com/fr
@@ -20,11 +24,7 @@ Author URI: http://milkcreation.fr
  * "IE8", "borderSpacing"
  */
 
-namespace tiFy\Plugins\OutdatedBrowser;
-
-use tiFy\App\Plugin;
-
-class OutdatedBrowser extends Plugin
+final class OutdatedBrowser extends AppController
 {
     /**
      * CONSTRUCTEUR.
@@ -45,7 +45,7 @@ class OutdatedBrowser extends Plugin
      *
      * @return void
      */
-    final public function init()
+    public function init()
     {
         \wp_register_style(
             'tiFyPluginOutdatedBrowser',
@@ -67,7 +67,7 @@ class OutdatedBrowser extends Plugin
      *
      * @return void
      */
-    final public function wp_enqueue_scripts()
+    public function wp_enqueue_scripts()
     {
         if ($this->appConfig('wp_enqueue_scripts', true)) : 
             \wp_enqueue_style('tiFyPluginOutdatedBrowser');
@@ -80,7 +80,7 @@ class OutdatedBrowser extends Plugin
      *
      * @return void
      */
-    final public function wp_footer()
+    public function wp_footer()
     {
         $output = "";
         $output .= "\t<div id=\"outdated\" style=\"z-index:9999999;\">\n";
