@@ -27,21 +27,19 @@ use tiFy\Apps\AppController;
 final class OutdatedBrowser extends AppController
 {
     /**
-     * CONSTRUCTEUR.
+     * Initialisation du controleur.
      *
      * @return void
      */
-    public function __construct()
+    public function appBoot()
     {
-        parent::__construct();
-
         $this->appAddAction('init');
         $this->appAddAction('wp_enqueue_scripts');
         $this->appAddAction('wp_footer', null, 99);
     }
 
     /**
-     * Initialisation globale.
+     * Initialisation globale de Wordpress.
      *
      * @return void
      */
@@ -69,7 +67,7 @@ final class OutdatedBrowser extends AppController
      */
     public function wp_enqueue_scripts()
     {
-        if ($this->appConfig('wp_enqueue_scripts', true)) : 
+        if ($this->appConfig('wp_enqueue_scripts', true)) :
             \wp_enqueue_style('tiFyPluginOutdatedBrowser');
             \wp_enqueue_script('tiFyPluginOutdatedBrowser');
         endif;
@@ -91,16 +89,7 @@ final class OutdatedBrowser extends AppController
         $output .= "\t\t<p class=\"last\"><a href=\"#\" id=\"btnCloseUpdateBrowser\" title=\"" . __('Fermer',
                 'tify') . "\">&times;</a></p>\n";
         $output .= "\t</div>";
-        $output .= "\t<script type=\"text/javascript\">/* <![CDATA[ */\n";
-        $output .= "\t\tjQuery( document ).ready( function($) {\n";
-        $output .= "\t\t\toutdatedBrowser({\n";
-        $output .= "\t\t\t\tbgColor: '" . $this->appConfig('bgColor') . "',\n";
-        $output .= "\t\t\t\tcolor: '" . $this->appConfig('color') . "',\n";
-        $output .= "\t\t\t\tlowerThan: '" . $this->appConfig('lowerThan') . "',\n";
-        $output .= "\t\t\t\tlanguagePath: '" . $this->appConfig('languagePath') . "'\n";
-        $output .= "\t\t\t});\n";
-        $output .= "\t\t});\n";
-        $output .= "\t/* ]]> */</script>\n";
+        $output .= "\t<script type=\"text/javascript\">/* <![CDATA[ */jQuery(document).ready(function($){outdatedBrowser({bgColor:'" . $this->appConfig('bgColor', '#F25648') . "',color:'" . $this->appConfig('color', '#FFF') . "',lowerThan: '" . $this->appConfig('lowerThan', 'transform') . "',languagePath: '" . $this->appConfig('languagePath', '') . "'});});/* ]]> */</script>";
 
         echo $output;
     }
