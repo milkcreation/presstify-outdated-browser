@@ -11,6 +11,7 @@
 
 namespace tiFy\Plugins\OutdatedBrowser;
 
+use tiFy\Asset\Asset;
 use tiFy\Apps\AppController;
 
 /**
@@ -26,6 +27,18 @@ use tiFy\Apps\AppController;
 
 final class OutdatedBrowser extends AppController
 {
+    /**
+     * Liste des attributs de configuration.
+     * @var array
+     */
+    protected $attributes = [
+        'bgColor'            => '#F25648',
+        'color'              => '#FFF',
+        'lowerThan'          => 'transform',
+        'languagePath'       => '',
+        'wp_enqueue_scripts' => true
+    ];
+
     /**
      * Initialisation du controleur.
      *
@@ -45,17 +58,47 @@ final class OutdatedBrowser extends AppController
      */
     public function init()
     {
+        $this->appSet(
+            'config',
+            array_merge(
+                $this->attributes,
+                $this->appConfig()
+            )
+        );
+        $this->appServiceGet(Asset::class)->setDataJs(
+            'outdatedBrowser',
+            [
+                'bgColor'      => $this->appConfig('bgColor'),
+                'color'        => $this->appConfig('color'),
+                'lowerThan'    => $this->appConfig('lowerThan'),
+                'languagePath' => $this->appConfig('languagePath')
+            ]
+        );
+
         \wp_register_style(
-            'tiFyPluginOutdatedBrowser',
+            'outdatedBrowser',
             '//cdn.rawgit.com/burocratik/outdated-browser/develop/outdatedbrowser/outdatedbrowser.min.css',
             [],
             '1.1.2'
         );
+        \wp_register_style(
+            'tiFyPluginOutdatedBrowser',
+            $this->appUrl() . '/assets/css/styles.css',
+            ['outdatedBrowser'],
+            290518
+        );
+        \wp_register_script(
+            'outdatedBrowser',
+            '//cdn.rawgit.com/burocratik/outdated-browser/develop/outdatedbrowser/outdatedbrowser.min.js',
+            [],
+            '1.1.2',
+            true
+        );
         \wp_register_script(
             'tiFyPluginOutdatedBrowser',
-            '//cdn.rawgit.com/burocratik/outdated-browser/develop/outdatedbrowser/outdatedbrowser.min.js',
-            ['jquery'],
-            '1.1.2',
+            $this->appUrl() . '/assets/js/scripts.js',
+            ['outdatedBrowser'],
+            290518,
             true
         );
     }
@@ -67,7 +110,7 @@ final class OutdatedBrowser extends AppController
      */
     public function wp_enqueue_scripts()
     {
-        if ($this->appConfig('wp_enqueue_scripts', true)) :
+        if ($this->appConfig('wp_enqueue_scripts')) :
             \wp_enqueue_style('tiFyPluginOutdatedBrowser');
             \wp_enqueue_script('tiFyPluginOutdatedBrowser');
         endif;
@@ -80,17 +123,8 @@ final class OutdatedBrowser extends AppController
      */
     public function wp_footer()
     {
-        $output = "";
-        $output .= "\t<div id=\"outdated\" style=\"z-index:9999999;\">\n";
-        $output .= "\t\t<h6>" . __('La version de votre navigateur est trop ancienne', 'tify') . "</h6>\n";
-        $output .= "\t\t<p>" . __('Pour afficher de manière satisfaisante le contenu de ce site',
-                'tify') . "<a id=\"btnUpdateBrowser\" href=\"http://outdatedbrowser.com/fr\" target=\"_blank\">" . __('Télécharger Google Chrome',
-                'tify') . "</a></p>\n";
-        $output .= "\t\t<p class=\"last\"><a href=\"#\" id=\"btnCloseUpdateBrowser\" title=\"" . __('Fermer',
-                'tify') . "\">&times;</a></p>\n";
-        $output .= "\t</div>";
-        $output .= "\t<script type=\"text/javascript\">/* <![CDATA[ */jQuery(document).ready(function($){outdatedBrowser({bgColor:'" . $this->appConfig('bgColor', '#F25648') . "',color:'" . $this->appConfig('color', '#FFF') . "',lowerThan: '" . $this->appConfig('lowerThan', 'transform') . "',languagePath: '" . $this->appConfig('languagePath', '') . "'});});/* ]]> */</script>";
-
-        echo $output;
+        if (!$this->appConfig('languagePath')) :
+            echo $this->appTemplateRender('outdated-browser');
+        endif;
     }
 }
