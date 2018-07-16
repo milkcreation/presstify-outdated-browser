@@ -1,6 +1,6 @@
 {
   "name": "presstify-plugins/outdated-browser",
-  "description": "Extension PresstiFy de contrôle et de mise à jour de navigateur internet obsolète.",
+  "description": "Plugin PresstiFy de contrôle et de mise à jour de navigateur internet obsolète.",
   "type": "presstify-plugin",
   "keywords": [
     "presstify",
@@ -10,7 +10,7 @@
     "browser compatibility"
   ],
   "homepage": "https://svn.tigreblanc.fr/presstify-plugins/outdated-browser",
-  "time": "2018-06-01",
+  "time": "2018-07-16",
   "license": "proprietary",
   "authors": [
     {
@@ -27,7 +27,7 @@
   ],
   "require": {
     "composer/installers": "~1.0",
-    "presstify/framework": "^2.0"
+    "presstify/framework": "^1.4"
   },
   "autoload": {
     "psr-4": {
