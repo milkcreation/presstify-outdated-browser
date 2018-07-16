@@ -3,7 +3,7 @@
 Plugin Name: Outdated Browser
 Plugin URI: https://presstify.com/plugins/outdated-browser
 Description: Avertisseur de Navigateur déprécié
-Version: 1.0.1
+Version: 1.0.2
 Author: Milkcreation
 Author URI: http://milkcreation.fr
 */
@@ -58,7 +58,7 @@ class OutdatedBrowser extends \tiFy\App\Plugin
         \wp_register_script(
             'outdated-browser',
             '//cdn.rawgit.com/burocratik/outdated-browser/develop/outdatedbrowser/outdatedbrowser.min.js',
-            ['jquery'],
+            [],
             '1.1.2',
             true
         );
@@ -93,6 +93,7 @@ class OutdatedBrowser extends \tiFy\App\Plugin
                 'tify') . "\">&times;</a></p>\n";
         $output .= "\t</div>";
         $output .= "\t<script type=\"text/javascript\">/* <![CDATA[ */\n";
+        $output .= "\tif (window.jQuery) {\n";
         $output .= "\t\tjQuery( document ).ready( function($) {\n";
         $output .= "\t\t\toutdatedBrowser({\n";
         $output .= "\t\t\t\tbgColor: '" . self::tFyAppConfig('bgColor') . "',\n";
@@ -101,6 +102,7 @@ class OutdatedBrowser extends \tiFy\App\Plugin
         $output .= "\t\t\t\tlanguagePath: '" . self::tFyAppConfig('languagePath') . "'\n";
         $output .= "\t\t\t});\n";
         $output .= "\t\t});\n";
+        $output .= "\t}\n";
         $output .= "\t/* ]]> */</script>\n";
 
         echo $output;
