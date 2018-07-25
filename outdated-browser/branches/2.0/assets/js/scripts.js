@@ -14,9 +14,9 @@ function addLoadEvent(func) {
 
 addLoadEvent(function(){
     outdatedBrowser({
-        bgColor: tFy.outdatedBrowser.bgColor,
-        color: tFy.outdatedBrowser.color,
-        lowerThan: tFy.outdatedBrowser.lowerThan,
-        languagePath: tFy.outdatedBrowser.languagePath
+        bgColor: tify.outdatedBrowser.bgColor,
+        color: tify.outdatedBrowser.color,
+        lowerThan: tify.outdatedBrowser.lowerThan,
+        languagePath: tify.outdatedBrowser.languagePath
     })
 });
