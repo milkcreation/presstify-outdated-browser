@@ -6,12 +6,11 @@
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package presstiFy
  * @namespace \tiFy\Plugins\AdminUi
- * @version 2.0.0
+ * @version 2.0.1
  */
 
 namespace tiFy\Plugins\OutdatedBrowser;
 
-use tiFy\Asset\Asset;
 use tiFy\Apps\AppController;
 
 /**
@@ -24,7 +23,6 @@ use tiFy\Apps\AppController;
  * "IE9", "boxShadow"
  * "IE8", "borderSpacing"
  */
-
 final class OutdatedBrowser extends AppController
 {
     /**
@@ -32,11 +30,11 @@ final class OutdatedBrowser extends AppController
      * @var array
      */
     protected $attributes = [
-        'bgColor'            => '#F25648',
-        'color'              => '#FFF',
-        'lowerThan'          => 'transform',
-        'languagePath'       => '',
-        'wp_enqueue_scripts' => true
+        'bgColor'      => '#F25648',
+        'color'        => '#FFF',
+        'lowerThan'    => 'transform',
+        'languagePath' => '',
+        'wp_enqueue'   => true,
     ];
 
     /**
@@ -46,6 +44,10 @@ final class OutdatedBrowser extends AppController
      */
     public function appBoot()
     {
+        $this->appTemplates(
+            ['directory' => $this->appDirname() . '/templates']
+        );
+
         $this->appAddAction('init');
         $this->appAddAction('wp_enqueue_scripts');
         $this->appAddAction('wp_footer', null, 99);
@@ -65,13 +67,13 @@ final class OutdatedBrowser extends AppController
                 $this->appConfig()
             )
         );
-        $this->appServiceGet(Asset::class)->setDataJs(
+        $this->appAssets()->setDataJs(
             'outdatedBrowser',
             [
                 'bgColor'      => $this->appConfig('bgColor'),
                 'color'        => $this->appConfig('color'),
                 'lowerThan'    => $this->appConfig('lowerThan'),
-                'languagePath' => $this->appConfig('languagePath')
+                'languagePath' => $this->appConfig('languagePath'),
             ]
         );
 
@@ -110,7 +112,7 @@ final class OutdatedBrowser extends AppController
      */
     public function wp_enqueue_scripts()
     {
-        if ($this->appConfig('wp_enqueue_scripts')) :
+        if ($this->appConfig('wp_enqueue')) :
             \wp_enqueue_style('tiFyPluginOutdatedBrowser');
             \wp_enqueue_script('tiFyPluginOutdatedBrowser');
         endif;
