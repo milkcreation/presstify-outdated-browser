@@ -1,12 +1,13 @@
 <?php
-/*
-Plugin Name: Outdated Browser
-Plugin URI: https://presstify.com/plugins/outdated-browser
-Description: Avertisseur de Navigateur déprécié
-Version: 1.0.2
-Author: Milkcreation
-Author URI: http://milkcreation.fr
-*/
+
+/**
+ * @name Outdated Browser
+ * @desc Avertisseur de Navigateur déprécié
+ * @author Jordy Manner <jordy@milkcreation.fr>
+ * @package presstify-plugins/outdated-browser
+ * @namespace \tiFy\Plugins\OutdatedBrowser
+ * @version 1.4.1
+ */
 
 /**
  * @see http://outdatedbrowser.com/fr
