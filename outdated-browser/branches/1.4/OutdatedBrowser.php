@@ -6,7 +6,7 @@
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package presstify-plugins/outdated-browser
  * @namespace \tiFy\Plugins\OutdatedBrowser
- * @version 1.4.1
+ * @version 1.4.2
  */
 
 /**
@@ -29,11 +29,8 @@ class OutdatedBrowser extends \tiFy\App\Plugin
      *
      * @return void
      */
-    public function __construct()
+    public function appBoot()
     {
-        parent::__construct();
-
-        // Déclaration des événements
         $this->appAddAction('init');
         $this->appAddAction('wp_enqueue_scripts');
         $this->appAddAction('wp_footer', null, 99);
