@@ -6,12 +6,12 @@
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package presstiFy
  * @namespace \tiFy\Plugins\AdminUi
- * @version 2.0.1
+ * @version 2.0.2
  */
 
 namespace tiFy\Plugins\OutdatedBrowser;
 
-use tiFy\Apps\AppController;
+use tiFy\App\AppController;
 
 /**
  * @see http://outdatedbrowser.com/fr
