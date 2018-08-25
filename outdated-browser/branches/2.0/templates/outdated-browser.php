@@ -1,6 +1,6 @@
 <?php
 /**
- * @var \tiFy\Apps\Templates\TemplateBaseController $this
+ * @var \tiFy\App\Templates\TemplateBaseController $this
  */
 ?>
 
