@@ -2,107 +2,152 @@
 
 /**
  * @name Outdated Browser
- * @desc Avertisseur de Navigateur déprécié
+ * @desc Extension PresstiFy de contrôle et de mise à jour de navigateur internet obsolète..
  * @author Jordy Manner <jordy@milkcreation.fr>
- * @package presstify-plugins/outdated-browser
- * @namespace \tiFy\Plugins\OutdatedBrowser
- * @version 1.4.2
- */
-
-/**
- * @see http://outdatedbrowser.com/fr
- * @see https://github.com/burocratik/Outdated-Browser/tree/master
- *
- * Lower Than (<):
- * "IE11","borderImage"
- * "IE10", "transform" (Default property)
- * "IE9", "boxShadow"
- * "IE8", "borderSpacing"
+ * @package presstiFy
+ * @namespace \tiFy\Plugins\AdminUi
+ * @version 2.0.2
  */
 
 namespace tiFy\Plugins\OutdatedBrowser;
 
-class OutdatedBrowser extends \tiFy\App\Plugin
+use Illuminate\Support\Arr;
+use tiFy\App\Dependency\AbstractAppDependency;
+
+/**
+ * Class OutdatedBrowser
+ * @package tiFy\Plugins\OutdatedBrowser
+ * @see http://outdatedbrowser.com/fr
+ * @see https://github.com/burocratik/Outdated-Browser/tree/master
+ *
+ * Activation :
+ * ----------------------------------------------------------------------------------------------------
+ * Dans config/app.php ajouter \tiFy\Plugins\OutdatedBrowser\OutdatedBrowser à la liste des fournisseurs de services chargés automatiquement par l'application.
+ * ex.
+ * <?php
+ * ...
+ * use tiFy\Plugins\OutdatedBrowser\OutdatedBrowser;
+ * ...
+ *
+ * return [
+ *      ...
+ *      'providers' => [
+ *          ...
+ *          OutdatedBrowser::class
+ *          ...
+ *      ]
+ * ];
+ *
+ * Configuration :
+ * ----------------------------------------------------------------------------------------------------
+ * Dans le dossier de config, créer le fichier social.php
+ * @see /vendor/presstify-plugins/social/Resources/config/social.php Exemple de configuration
+ */
+final class OutdatedBrowser extends AbstractAppDependency
 {
     /**
-     * CONSTRUCTEUR
-     *
-     * @return void
+     * Liste des attributs de configuration.
+     * @var array
      */
-    public function appBoot()
+    protected $attributes = [
+        'bgColor'               => '#F25648',
+        'color'                 => '#FFF',
+        'lowerThan'             => 'transform',
+        'languagePath'          => '',
+        'wp_enqueue_scripts'    => true
+    ];
+
+    /**
+     * {@inheritdoc}
+     */
+    public function boot()
     {
-        $this->appAddAction('init');
-        $this->appAddAction('wp_enqueue_scripts');
-        $this->appAddAction('wp_footer', null, 99);
+        $this->app->appAddAction('init', [$this, 'init']);
+        $this->app->appAddAction('wp_enqueue_scripts', [$this, 'wp_enqueue_scripts']);
+        $this->app->appAddAction('wp_footer', [$this, 'wp_footer'], 99);
     }
 
     /**
-     * EVENEMENTS
+     * Récupération d'un attribut de configuration.
+     *
+     * @param string $key Clé d'indice de l'attribut. Syntaxe à point permise.
+     * @param mixed $defaults Valeur de retour par défaut.
+     *
+     * @return mixed
      */
+    public function get($key, $defaults = null)
+    {
+        return Arr::get($this->attributes, $key, $defaults);
+    }
+
     /**
-     * Initialisation globale
+     * Initialisation globale de Wordpress.
      *
      * @return void
      */
-    final public function init()
+    public function init()
     {
-        // Déclaration des scripts
+        $this->attributes = array_merge(
+            $this->attributes,
+            config('outdated-browser')
+        );
+
+        $this->app->appAssets()->setDataJs(
+            'outdatedBrowser',
+            [
+                'bgColor'      => $this->get('bgColor'),
+                'color'        => $this->get('color'),
+                'lowerThan'    => $this->get('lowerThan'),
+                'languagePath' => $this->get('languagePath'),
+            ]
+        );
+
         \wp_register_style(
-            'outdated-browser',
-            '//cdn.rawgit.com/burocratik/outdated-browser/develop/outdatedbrowser/outdatedbrowser.min.css',
+            'outdatedBrowser',
+            class_info($this)->getUrl() . '/Resources/assets/css/outdatedbrowser.min.css',
             [],
             '1.1.2'
         );
+        \wp_register_style(
+            'tiFyOutdatedBrowser',
+            class_info($this)->getUrl() . '/Resources/assets/css/styles.css',
+            ['outdatedBrowser'],
+            180829
+        );
+
         \wp_register_script(
-            'outdated-browser',
-            '//cdn.rawgit.com/burocratik/outdated-browser/develop/outdatedbrowser/outdatedbrowser.min.js',
+            'tiFyOutdatedBrowser',
+            class_info($this)->getUrl() . '/Resources/assets/js/scripts.min.js',
             [],
-            '1.1.2',
+            180829,
             true
         );
     }
 
     /**
-     * Mise en file des scripts de l'interface utilisateurs
+     * Mise en file des scripts de l'interface utilisateurs.
      *
      * @return void
      */
-    /** == Mise en file des scripts == **/
-    final public function wp_enqueue_scripts()
+    public function wp_enqueue_scripts()
     {
-        \wp_enqueue_style('outdated-browser');
-        \wp_enqueue_script('outdated-browser');
+        if ($this->get('wp_enqueue_scripts')) :
+            \wp_enqueue_style('tiFyOutdatedBrowser');
+            \wp_enqueue_script('tiFyOutdatedBrowser');
+        endif;
     }
 
     /**
-     * Scripts du pied de page
+     * Scripts du pied de page.
      *
      * @return void
      */
-    final public function wp_footer()
+    public function wp_footer()
     {
-        $output = "";
-        $output .= "\t<div id=\"outdated\" style=\"z-index:9999999;\">\n";
-        $output .= "\t\t<h6>" . __('La version de votre navigateur est trop ancienne', 'tify') . "</h6>\n";
-        $output .= "\t\t<p>" . __('Pour afficher de manière satisfaisante le contenu de ce site',
-                'tify') . "<a id=\"btnUpdateBrowser\" href=\"http://outdatedbrowser.com/fr\" target=\"_blank\">" . __('Télécharger Google Chrome',
-                'tify') . "</a></p>\n";
-        $output .= "\t\t<p class=\"last\"><a href=\"#\" id=\"btnCloseUpdateBrowser\" title=\"" . __('Fermer',
-                'tify') . "\">&times;</a></p>\n";
-        $output .= "\t</div>";
-        $output .= "\t<script type=\"text/javascript\">/* <![CDATA[ */\n";
-        $output .= "\tif (window.jQuery) {\n";
-        $output .= "\t\tjQuery( document ).ready( function($) {\n";
-        $output .= "\t\t\toutdatedBrowser({\n";
-        $output .= "\t\t\t\tbgColor: '" . self::tFyAppConfig('bgColor') . "',\n";
-        $output .= "\t\t\t\tcolor: '" . self::tFyAppConfig('color') . "',\n";
-        $output .= "\t\t\t\tlowerThan: '" . self::tFyAppConfig('lowerThan') . "',\n";
-        $output .= "\t\t\t\tlanguagePath: '" . self::tFyAppConfig('languagePath') . "'\n";
-        $output .= "\t\t\t});\n";
-        $output .= "\t\t});\n";
-        $output .= "\t}\n";
-        $output .= "\t/* ]]> */</script>\n";
-
-        echo $output;
+        if (!$this->get('languagePath')) :
+            echo view()
+                ->setDirectory(__DIR__ . '/Resources/views')
+                ->render('outdated-browser');
+        endif;
     }
 }
