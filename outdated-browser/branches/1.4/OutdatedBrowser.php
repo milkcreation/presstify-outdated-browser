@@ -2,11 +2,11 @@
 
 /**
  * @name Outdated Browser
- * @desc Extension PresstiFy de contrôle et de mise à jour de navigateur internet obsolète..
+ * @desc Extension PresstiFy de contrôle et de mise à jour de navigateur internet obsolète.
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package presstiFy
  * @namespace \tiFy\Plugins\AdminUi
- * @version 2.0.2
+ * @version 1.4.3
  */
 
 namespace tiFy\Plugins\OutdatedBrowser;
