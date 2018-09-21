@@ -2,131 +2,144 @@
 
 /**
  * @name Outdated Browser
- * @desc Extension PresstiFy de contrôle et de mise à jour de navigateur internet obsolète..
+ * @desc Extension PresstiFy de contrôle et de mise à jour de navigateur internet obsolète.
  * @author Jordy Manner <jordy@milkcreation.fr>
- * @package presstiFy
- * @namespace \tiFy\Plugins\AdminUi
- * @version 2.0.1
+ * @package presstify-plugins/outdated-browser
+ * @namespace \tiFy\Plugins\OutdatedBrowser
+ * @version 2.0.3
  */
 
 namespace tiFy\Plugins\OutdatedBrowser;
 
-use tiFy\Apps\AppController;
+use Illuminate\Support\Arr;
 
 /**
+ * Class OutdatedBrowser
+ * @package tiFy\Plugins\OutdatedBrowser
  * @see http://outdatedbrowser.com/fr
  * @see https://github.com/burocratik/Outdated-Browser/tree/master
  *
- * Lower Than (<):
- * "IE11","borderImage"
- * "IE10", "transform" (Default property)
- * "IE9", "boxShadow"
- * "IE8", "borderSpacing"
+ * Activation :
+ * ----------------------------------------------------------------------------------------------------
+ * Dans config/app.php ajouter \tiFy\Plugins\OutdatedBrowser\OutdatedBrowser à la liste des fournisseurs de services chargés automatiquement par l'application.
+ * ex.
+ * <?php
+ * ...
+ * use tiFy\Plugins\OutdatedBrowser\OutdatedBrowser;
+ * ...
+ *
+ * return [
+ *      ...
+ *      'providers' => [
+ *          ...
+ *          OutdatedBrowser::class
+ *          ...
+ *      ]
+ * ];
+ *
+ * Configuration :
+ * ----------------------------------------------------------------------------------------------------
+ * Dans le dossier de config, créer le fichier social.php
+ * @see /vendor/presstify-plugins/social/Resources/config/social.php Exemple de configuration
  */
-final class OutdatedBrowser extends AppController
+final class OutdatedBrowser
 {
     /**
      * Liste des attributs de configuration.
      * @var array
      */
     protected $attributes = [
-        'bgColor'      => '#F25648',
-        'color'        => '#FFF',
-        'lowerThan'    => 'transform',
-        'languagePath' => '',
-        'wp_enqueue'   => true,
+        'bgColor'               => '#F25648',
+        'color'                 => '#FFF',
+        'lowerThan'             => 'borderImage',
+        'languagePath'          => '',
+        'wp_enqueue_scripts'    => true
     ];
 
     /**
-     * Initialisation du controleur.
+     * CONSTRUCTEUR.
      *
      * @return void
      */
-    public function appBoot()
+    public function __construct()
     {
-        $this->appTemplates(
-            ['directory' => $this->appDirname() . '/templates']
+        add_action(
+            'init',
+            function () {
+                $this->attributes = array_merge(
+                    $this->attributes,
+                    config('outdated-browser')
+                );
+
+                assets()->setDataJs(
+                    'outdatedBrowser',
+                    [
+                        'bgColor'      => $this->get('bgColor'),
+                        'color'        => $this->get('color'),
+                        'lowerThan'    => $this->get('lowerThan'),
+                        'languagePath' => $this->get('languagePath'),
+                    ]
+                );
+
+                $url = class_info($this)->getUrl();
+
+                wp_register_style(
+                    'outdatedBrowser',
+                    $url . '/Resources/assets/css/outdatedbrowser.min.css',
+                    [],
+                    '1.1.2'
+                );
+
+                wp_register_style(
+                    'tiFyOutdatedBrowser',
+                    $url . '/Resources/assets/css/styles.css',
+                    ['outdatedBrowser'],
+                    180829
+                );
+
+                wp_register_script(
+                    'tiFyOutdatedBrowser',
+                    $url . '/Resources/assets/js/scripts.min.js',
+                    [],
+                    180829,
+                    true
+                );
+            }
         );
 
-        $this->appAddAction('init');
-        $this->appAddAction('wp_enqueue_scripts');
-        $this->appAddAction('wp_footer', null, 99);
+        add_action(
+            'wp_enqueue_scripts',
+            function () {
+                if ($this->get('wp_enqueue_scripts')) :
+                    wp_enqueue_style('tiFyOutdatedBrowser');
+                    wp_enqueue_script('tiFyOutdatedBrowser');
+                endif;
+            }
+        );
+
+        add_action(
+            'wp_footer',
+            function () {
+                if (!$this->get('languagePath')) :
+                    echo view()
+                        ->setDirectory(__DIR__ . '/Resources/views')
+                        ->render('outdated-browser');
+                endif;
+            },
+            999999
+        );
     }
 
     /**
-     * Initialisation globale de Wordpress.
+     * Récupération d'un attribut de configuration.
      *
-     * @return void
-     */
-    public function init()
-    {
-        $this->appSet(
-            'config',
-            array_merge(
-                $this->attributes,
-                $this->appConfig()
-            )
-        );
-        $this->appAssets()->setDataJs(
-            'outdatedBrowser',
-            [
-                'bgColor'      => $this->appConfig('bgColor'),
-                'color'        => $this->appConfig('color'),
-                'lowerThan'    => $this->appConfig('lowerThan'),
-                'languagePath' => $this->appConfig('languagePath'),
-            ]
-        );
-
-        \wp_register_style(
-            'outdatedBrowser',
-            '//cdn.rawgit.com/burocratik/outdated-browser/develop/outdatedbrowser/outdatedbrowser.min.css',
-            [],
-            '1.1.2'
-        );
-        \wp_register_style(
-            'tiFyPluginOutdatedBrowser',
-            $this->appUrl() . '/assets/css/styles.css',
-            ['outdatedBrowser'],
-            290518
-        );
-        \wp_register_script(
-            'outdatedBrowser',
-            '//cdn.rawgit.com/burocratik/outdated-browser/develop/outdatedbrowser/outdatedbrowser.min.js',
-            [],
-            '1.1.2',
-            true
-        );
-        \wp_register_script(
-            'tiFyPluginOutdatedBrowser',
-            $this->appUrl() . '/assets/js/scripts.js',
-            ['outdatedBrowser'],
-            290518,
-            true
-        );
-    }
-
-    /**
-     * Mise en file des scripts de l'interface utilisateurs.
+     * @param string $key Clé d'indice de l'attribut. Syntaxe à point permise.
+     * @param mixed $defaults Valeur de retour par défaut.
      *
-     * @return void
+     * @return mixed
      */
-    public function wp_enqueue_scripts()
+    public function get($key, $defaults = null)
     {
-        if ($this->appConfig('wp_enqueue')) :
-            \wp_enqueue_style('tiFyPluginOutdatedBrowser');
-            \wp_enqueue_script('tiFyPluginOutdatedBrowser');
-        endif;
-    }
-
-    /**
-     * Scripts du pied de page.
-     *
-     * @return void
-     */
-    public function wp_footer()
-    {
-        if (!$this->appConfig('languagePath')) :
-            echo $this->appTemplateRender('outdated-browser');
-        endif;
+        return Arr::get($this->attributes, $key, $defaults);
     }
 }
