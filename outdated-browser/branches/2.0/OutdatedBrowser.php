@@ -68,7 +68,7 @@ final class OutdatedBrowser
             function () {
                 $this->attributes = array_merge(
                     $this->attributes,
-                    config('outdated-browser')
+                    config('outdated-browser', [])
                 );
 
                 assets()->setDataJs(
