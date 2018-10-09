@@ -1,7 +1,7 @@
 "use strict";
 
 let outdatedBrowser = function(options) {
-    let self = this;
+    let self = outdatedBrowser;
 
     //Variable definition (before ajax)
     let outdated = document.getElementById("outdated");
@@ -34,15 +34,15 @@ let outdatedBrowser = function(options) {
         self.defaultOpts.lowerThan = options.lowerThan;
         self.defaultOpts.languagePath = options.languagePath;
 
-        bkgColor = self.defaultOpts.bgColor;
-        txtColor = self.defaultOpts.color;
-        cssProp = self.defaultOpts.lowerThan;
-        languagePath = self.defaultOpts.languagePath;
+        self.bkgColor = self.defaultOpts.bgColor;
+        self.txtColor = self.defaultOpts.color;
+        self.cssProp = self.defaultOpts.lowerThan;
+        self.languagePath = self.defaultOpts.languagePath;
     } else {
-        bkgColor = self.defaultOpts.bgColor;
-        txtColor = self.defaultOpts.color;
-        cssProp = self.defaultOpts.lowerThan;
-        languagePath = self.defaultOpts.languagePath;
+        self.bkgColor = self.defaultOpts.bgColor;
+        self.txtColor = self.defaultOpts.color;
+        self.cssProp = self.defaultOpts.lowerThan;
+        self.languagePath = self.defaultOpts.languagePath;
     } //end if options
 
 
@@ -101,8 +101,8 @@ let outdatedBrowser = function(options) {
     let validBrowser = false;
 
     // browser check by js props
-    if(/^js:+/g.test(cssProp)) {
-        let jsProp = cssProp.split(':')[1];
+    if(/^js:+/g.test(self.cssProp)) {
+        let jsProp = self.cssProp.split(':')[1];
         if(!jsProp)
             return;
 
@@ -115,7 +115,7 @@ let outdatedBrowser = function(options) {
         }
     } else {
         // check by css3 property (transform=default)
-        validBrowser = supports('' + cssProp + '');
+        validBrowser = supports('' + self.cssProp + '');
     }
 
 
@@ -136,10 +136,10 @@ let outdatedBrowser = function(options) {
 
 
     //Check AJAX Options: if languagePath == '' > use no Ajax way, html is needed inside <div id="outdated">
-    if (languagePath === ' ' || languagePath.length === 0) {
+    if (self.languagePath === ' ' || self.languagePath.length === 0) {
         startStylesAndEvents();
     } else {
-        grabFile(languagePath);
+        grabFile(self.languagePath);
     }
 
     //events and colors
@@ -148,19 +148,19 @@ let outdatedBrowser = function(options) {
         let btnUpdate = document.getElementById("btnUpdateBrowser");
 
         //check settings attributes
-        outdated.style.backgroundColor = bkgColor;
+        outdated.style.backgroundColor = self.bkgColor;
         //way too hard to put !important on IE6
-        outdated.style.color = txtColor;
-        outdated.children[0].style.color = txtColor;
-        outdated.children[1].style.color = txtColor;
+        outdated.style.color = self.txtColor;
+        outdated.children[0].style.color = self.txtColor;
+        outdated.children[1].style.color = self.txtColor;
 
         //check settings attributes
-        btnUpdate.style.color = txtColor;
+        btnUpdate.style.color = self.txtColor;
         // btnUpdate.style.borderColor = txtColor;
         if (btnUpdate.style.borderColor) {
-            btnUpdate.style.borderColor = txtColor;
+            btnUpdate.style.borderColor = self.txtColor;
         }
-        btnClose.style.color = txtColor;
+        btnClose.style.color = self.txtColor;
 
         //close button
         btnClose.onmousedown = function() {
@@ -170,12 +170,12 @@ let outdatedBrowser = function(options) {
 
         //Override the update button color to match the background color
         btnUpdate.onmouseover = function() {
-            self.style.color = bkgColor;
-            self.style.backgroundColor = txtColor;
+            btnUpdate.style.color = self.bkgColor;
+            btnUpdate.style.backgroundColor = self.txtColor;
         };
         btnUpdate.onmouseout = function() {
-            self.style.color = txtColor;
-            self.style.backgroundColor = bkgColor;
+            btnUpdate.style.color = self.txtColor;
+            btnUpdate.style.backgroundColor = self.bkgColor;
         };
     } //end styles and events
 
