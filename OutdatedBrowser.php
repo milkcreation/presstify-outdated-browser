@@ -6,7 +6,7 @@
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package presstify-plugins/outdated-browser
  * @namespace \tiFy\Plugins\OutdatedBrowser
- * @version 2.0.4
+ * @version 2.0.5
  */
 
 namespace tiFy\Plugins\OutdatedBrowser;

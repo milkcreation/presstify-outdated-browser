@@ -16,7 +16,7 @@ var outdatedBrowser = function(options) {
         color: '#ffffff',
         lowerThan: 'transform',
         languagePath: '../outdatedbrowser/lang/en.html'
-    }
+    };
 
     if (options) {
         //assign css3 property or js property to IE browser version
