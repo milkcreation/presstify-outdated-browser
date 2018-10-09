@@ -1,57 +1,53 @@
-/*!--------------------------------------------------------------------
-JAVASCRIPT "Outdated Browser"
-Version:    1.1.2 - 2015
-author:     Burocratik
-website:    http://www.burocratik.com
-* @preserve
------------------------------------------------------------------------*/
-var outdatedBrowser = function(options) {
+"use strict";
+
+let outdatedBrowser = function(options) {
+    let self = this;
 
     //Variable definition (before ajax)
-    var outdated = document.getElementById("outdated");
+    let outdated = document.getElementById("outdated");
 
     // Default settings
-    this.defaultOpts = {
+    self.defaultOpts = {
         bgColor: '#f25648',
         color: '#ffffff',
         lowerThan: 'transform',
         languagePath: '../outdatedbrowser/lang/en.html'
-    }
+    };
 
     if (options) {
         //assign css3 property or js property to IE browser version
-        if (options.lowerThan == 'IE8' || options.lowerThan == 'borderSpacing') {
+        if (options.lowerThan === 'IE8' || options.lowerThan === 'borderSpacing') {
             options.lowerThan = 'borderSpacing';
-        } else if (options.lowerThan == 'IE9' || options.lowerThan == 'boxShadow') {
+        } else if (options.lowerThan === 'IE9' || options.lowerThan === 'boxShadow') {
             options.lowerThan = 'boxShadow';
-        } else if (options.lowerThan == 'IE10' || options.lowerThan == 'transform' || options.lowerThan == '' || typeof options.lowerThan === "undefined") {
+        } else if (options.lowerThan === 'IE10' || options.lowerThan === 'transform' || options.lowerThan === '' || typeof options.lowerThan === "undefined") {
             options.lowerThan = 'transform';
-        } else if (options.lowerThan == 'IE11' || options.lowerThan == 'borderImage') {
+        } else if (options.lowerThan === 'IE11' || options.lowerThan === 'borderImage') {
             options.lowerThan = 'borderImage';
-        }  else if (options.lowerThan == 'Edge' || options.lowerThan == 'js:Promise') {
+        }  else if (options.lowerThan === 'Edge' || options.lowerThan === 'js:Promise') {
             options.lowerThan = 'js:Promise';
         }
 
         //all properties
-        this.defaultOpts.bgColor = options.bgColor;
-        this.defaultOpts.color = options.color;
-        this.defaultOpts.lowerThan = options.lowerThan;
-        this.defaultOpts.languagePath = options.languagePath;
+        self.defaultOpts.bgColor = options.bgColor;
+        self.defaultOpts.color = options.color;
+        self.defaultOpts.lowerThan = options.lowerThan;
+        self.defaultOpts.languagePath = options.languagePath;
 
-        bkgColor = this.defaultOpts.bgColor;
-        txtColor = this.defaultOpts.color;
-        cssProp = this.defaultOpts.lowerThan;
-        languagePath = this.defaultOpts.languagePath;
+        bkgColor = self.defaultOpts.bgColor;
+        txtColor = self.defaultOpts.color;
+        cssProp = self.defaultOpts.lowerThan;
+        languagePath = self.defaultOpts.languagePath;
     } else {
-        bkgColor = this.defaultOpts.bgColor;
-        txtColor = this.defaultOpts.color;
-        cssProp = this.defaultOpts.lowerThan;
-        languagePath = this.defaultOpts.languagePath;
+        bkgColor = self.defaultOpts.bgColor;
+        txtColor = self.defaultOpts.color;
+        cssProp = self.defaultOpts.lowerThan;
+        languagePath = self.defaultOpts.languagePath;
     } //end if options
 
 
     //Define opacity and fadeIn/fadeOut functions
-    var done = true;
+    let done = true;
 
     function function_opacity(opacity_value) {
         outdated.style.opacity = opacity_value / 100;
@@ -68,10 +64,10 @@ var outdatedBrowser = function(options) {
 
     function function_fade_in(opacity_value) {
         function_opacity(opacity_value);
-        if (opacity_value == 1) {
+        if (opacity_value === 1) {
             outdated.style.display = 'block';
         }
-        if (opacity_value == 100) {
+        if (opacity_value === 100) {
             done = true;
         }
     }
@@ -81,10 +77,10 @@ var outdatedBrowser = function(options) {
     //     return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
     // }
 
-    var supports = ( function() {
-        var div = document.createElement('div');
-        var vendors = 'Khtml Ms O Moz Webkit'.split(' ');
-        var len = vendors.length;
+    let supports = ( function() {
+        let div = document.createElement('div');
+        let vendors = 'Khtml Ms O Moz Webkit'.split(' ');
+        let len = vendors.length;
 
         return function(prop) {
             if (prop in div.style) return true;
@@ -102,11 +98,11 @@ var outdatedBrowser = function(options) {
         };
     } )();
 
-    var validBrowser = false;
+    let validBrowser = false;
 
     // browser check by js props
     if(/^js:+/g.test(cssProp)) {
-        var jsProp = cssProp.split(':')[1];
+        let jsProp = cssProp.split(':')[1];
         if(!jsProp)
             return;
 
@@ -140,7 +136,7 @@ var outdatedBrowser = function(options) {
 
 
     //Check AJAX Options: if languagePath == '' > use no Ajax way, html is needed inside <div id="outdated">
-    if (languagePath === ' ' || languagePath.length == 0) {
+    if (languagePath === ' ' || languagePath.length === 0) {
         startStylesAndEvents();
     } else {
         grabFile(languagePath);
@@ -148,8 +144,8 @@ var outdatedBrowser = function(options) {
 
     //events and colors
     function startStylesAndEvents() {
-        var btnClose = document.getElementById("btnCloseUpdateBrowser");
-        var btnUpdate = document.getElementById("btnUpdateBrowser");
+        let btnClose = document.getElementById("btnCloseUpdateBrowser");
+        let btnUpdate = document.getElementById("btnUpdateBrowser");
 
         //check settings attributes
         outdated.style.backgroundColor = bkgColor;
@@ -174,25 +170,25 @@ var outdatedBrowser = function(options) {
 
         //Override the update button color to match the background color
         btnUpdate.onmouseover = function() {
-            this.style.color = bkgColor;
-            this.style.backgroundColor = txtColor;
+            self.style.color = bkgColor;
+            self.style.backgroundColor = txtColor;
         };
         btnUpdate.onmouseout = function() {
-            this.style.color = txtColor;
-            this.style.backgroundColor = bkgColor;
+            self.style.color = txtColor;
+            self.style.backgroundColor = bkgColor;
         };
     } //end styles and events
 
 
     // IF AJAX with request ERROR > insert english default
-    var ajaxEnglishDefault = '<h6>Your browser is out-of-date!</h6>'
-        + '<p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update my browser now </a></p>'
-        + '<p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>';
+    let ajaxEnglishDefault = '<h6>Your browser is out-of-date!</h6>' +
+        '<p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update my browser now </a></p>' +
+        '<p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>';
 
 
     //** AJAX FUNCTIONS - Bulletproof Ajax by Jeremy Keith **
     function getHTTPObject() {
-        var xhr = false;
+        let xhr = false;
         if (window.XMLHttpRequest) {
             xhr = new XMLHttpRequest();
         } else if (window.ActiveXObject) {
@@ -210,7 +206,7 @@ var outdatedBrowser = function(options) {
     }//end function
 
     function grabFile(file) {
-        var request = getHTTPObject();
+        let request = getHTTPObject();
         if (request) {
             request.onreadystatechange = function() {
                 displayResponse(request);
@@ -222,9 +218,9 @@ var outdatedBrowser = function(options) {
     } //end grabFile
 
     function displayResponse(request) {
-        var insertContentHere = document.getElementById("outdated");
-        if (request.readyState == 4) {
-            if (request.status == 200 || request.status == 304) {
+        let insertContentHere = document.getElementById("outdated");
+        if (request.readyState === 4) {
+            if (request.status === 200 || request.status === 304) {
                 insertContentHere.innerHTML = request.responseText;
             } else {
                 insertContentHere.innerHTML = ajaxEnglishDefault;
@@ -238,8 +234,8 @@ var outdatedBrowser = function(options) {
 };
 
 function addLoadEvent(func) {
-    var oldonload = window.onload;
-    if (typeof window.onload != 'function') {
+    let oldonload = window.onload;
+    if (typeof window.onload !== 'function') {
         window.onload = func;
     } else {
         window.onload = function() {
@@ -247,7 +243,7 @@ function addLoadEvent(func) {
                 oldonload();
             }
             func();
-        }
+        };
     }
 }
 
@@ -257,5 +253,5 @@ addLoadEvent(function(){
         color: tify.outdatedBrowser.color,
         lowerThan: tify.outdatedBrowser.lowerThan,
         languagePath: tify.outdatedBrowser.languagePath
-    })
+    });
 });
