@@ -1,6 +1,6 @@
 <?php
 /**
- * @var \tiFy\Kernel\Templates\TemplateController $this
+ * @var tiFy\View\ViewController $this
  */
 ?>
 
