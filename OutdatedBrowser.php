@@ -1,17 +1,12 @@
 <?php
-
-/**
- * @name Outdated Browser
- * @desc Extension PresstiFy de contrôle et de mise à jour de navigateur internet obsolète..
- * @author Jordy Manner <jordy@milkcreation.fr>
- * @package presstiFy
- * @namespace \tiFy\Plugins\AdminUi
- * @version 2.0.1
- */
-
-namespace tiFy\Plugins\OutdatedBrowser;
-
-use tiFy\Apps\AppController;
+/*
+Plugin Name: Outdated Browser
+Plugin URI: https://presstify.com/plugins/outdated-browser
+Description: Avertisseur de Navigateur déprécié
+Version: 1.0.2
+Author: Milkcreation
+Author URI: http://milkcreation.fr
+*/
 
 /**
  * @see http://outdatedbrowser.com/fr
@@ -23,110 +18,93 @@ use tiFy\Apps\AppController;
  * "IE9", "boxShadow"
  * "IE8", "borderSpacing"
  */
-final class OutdatedBrowser extends AppController
+
+namespace tiFy\Plugins\OutdatedBrowser;
+
+class OutdatedBrowser extends \tiFy\App\Plugin
 {
     /**
-     * Liste des attributs de configuration.
-     * @var array
-     */
-    protected $attributes = [
-        'bgColor'      => '#F25648',
-        'color'        => '#FFF',
-        'lowerThan'    => 'transform',
-        'languagePath' => '',
-        'wp_enqueue'   => true,
-    ];
-
-    /**
-     * Initialisation du controleur.
+     * CONSTRUCTEUR
      *
      * @return void
      */
-    public function appBoot()
+    public function __construct()
     {
-        $this->appTemplates(
-            ['directory' => $this->appDirname() . '/templates']
-        );
+        parent::__construct();
 
+        // Déclaration des événements
         $this->appAddAction('init');
         $this->appAddAction('wp_enqueue_scripts');
         $this->appAddAction('wp_footer', null, 99);
     }
 
     /**
-     * Initialisation globale de Wordpress.
+     * EVENEMENTS
+     */
+    /**
+     * Initialisation globale
      *
      * @return void
      */
-    public function init()
+    final public function init()
     {
-        $this->appSet(
-            'config',
-            array_merge(
-                $this->attributes,
-                $this->appConfig()
-            )
-        );
-        $this->appAssets()->setDataJs(
-            'outdatedBrowser',
-            [
-                'bgColor'      => $this->appConfig('bgColor'),
-                'color'        => $this->appConfig('color'),
-                'lowerThan'    => $this->appConfig('lowerThan'),
-                'languagePath' => $this->appConfig('languagePath'),
-            ]
-        );
-
+        // Déclaration des scripts
         \wp_register_style(
-            'outdatedBrowser',
+            'outdated-browser',
             '//cdn.rawgit.com/burocratik/outdated-browser/develop/outdatedbrowser/outdatedbrowser.min.css',
             [],
             '1.1.2'
         );
-        \wp_register_style(
-            'tiFyPluginOutdatedBrowser',
-            $this->appUrl() . '/assets/css/styles.css',
-            ['outdatedBrowser'],
-            290518
-        );
         \wp_register_script(
-            'outdatedBrowser',
+            'outdated-browser',
             '//cdn.rawgit.com/burocratik/outdated-browser/develop/outdatedbrowser/outdatedbrowser.min.js',
             [],
             '1.1.2',
             true
         );
-        \wp_register_script(
-            'tiFyPluginOutdatedBrowser',
-            $this->appUrl() . '/assets/js/scripts.js',
-            ['outdatedBrowser'],
-            290518,
-            true
-        );
     }
 
     /**
-     * Mise en file des scripts de l'interface utilisateurs.
+     * Mise en file des scripts de l'interface utilisateurs
      *
      * @return void
      */
-    public function wp_enqueue_scripts()
+    /** == Mise en file des scripts == **/
+    final public function wp_enqueue_scripts()
     {
-        if ($this->appConfig('wp_enqueue')) :
-            \wp_enqueue_style('tiFyPluginOutdatedBrowser');
-            \wp_enqueue_script('tiFyPluginOutdatedBrowser');
-        endif;
+        \wp_enqueue_style('outdated-browser');
+        \wp_enqueue_script('outdated-browser');
     }
 
     /**
-     * Scripts du pied de page.
+     * Scripts du pied de page
      *
      * @return void
      */
-    public function wp_footer()
+    final public function wp_footer()
     {
-        if (!$this->appConfig('languagePath')) :
-            echo $this->appTemplateRender('outdated-browser');
-        endif;
+        $output = "";
+        $output .= "\t<div id=\"outdated\" style=\"z-index:9999999;\">\n";
+        $output .= "\t\t<h6>" . __('La version de votre navigateur est trop ancienne', 'tify') . "</h6>\n";
+        $output .= "\t\t<p>" . __('Pour afficher de manière satisfaisante le contenu de ce site',
+                'tify') . "<a id=\"btnUpdateBrowser\" href=\"http://outdatedbrowser.com/fr\" target=\"_blank\">" . __('Télécharger Google Chrome',
+                'tify') . "</a></p>\n";
+        $output .= "\t\t<p class=\"last\"><a href=\"#\" id=\"btnCloseUpdateBrowser\" title=\"" . __('Fermer',
+                'tify') . "\">&times;</a></p>\n";
+        $output .= "\t</div>";
+        $output .= "\t<script type=\"text/javascript\">/* <![CDATA[ */\n";
+        $output .= "\tif (window.jQuery) {\n";
+        $output .= "\t\tjQuery( document ).ready( function($) {\n";
+        $output .= "\t\t\toutdatedBrowser({\n";
+        $output .= "\t\t\t\tbgColor: '" . self::tFyAppConfig('bgColor') . "',\n";
+        $output .= "\t\t\t\tcolor: '" . self::tFyAppConfig('color') . "',\n";
+        $output .= "\t\t\t\tlowerThan: '" . self::tFyAppConfig('lowerThan') . "',\n";
+        $output .= "\t\t\t\tlanguagePath: '" . self::tFyAppConfig('languagePath') . "'\n";
+        $output .= "\t\t\t});\n";
+        $output .= "\t\t});\n";
+        $output .= "\t}\n";
+        $output .= "\t/* ]]> */</script>\n";
+
+        echo $output;
     }
 }
