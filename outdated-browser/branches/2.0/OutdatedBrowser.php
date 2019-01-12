@@ -1,27 +1,24 @@
 <?php
 
-/**
- * @name Outdated Browser
- * @desc Extension PresstiFy de contrôle et de mise à jour de navigateur internet obsolète.
- * @author Jordy Manner <jordy@milkcreation.fr>
- * @package presstify-plugins/outdated-browser
- * @namespace \tiFy\Plugins\OutdatedBrowser
- * @version 2.0.7
- */
-
 namespace tiFy\Plugins\OutdatedBrowser;
 
 use Illuminate\Support\Arr;
 
 /**
  * Class OutdatedBrowser
+ *
+ * @desc Extension PresstiFy de contrôle et de mise à jour de navigateur internet déprécié.
+ * @author Jordy Manner <jordy@milkcreation.fr>
  * @package tiFy\Plugins\OutdatedBrowser
+ * @version 2.0.8
+ *
  * @see http://outdatedbrowser.com/fr
  * @see https://github.com/burocratik/Outdated-Browser/tree/master
  *
- * Activation :
- * ----------------------------------------------------------------------------------------------------
- * Dans config/app.php ajouter \tiFy\Plugins\OutdatedBrowser\OutdatedBrowser à la liste des fournisseurs de services chargés automatiquement par l'application.
+ * USAGE :
+ * Activation
+ * ---------------------------------------------------------------------------------------------------------------------
+ * Dans config/app.php ajouter \tiFy\Plugins\OutdatedBrowser\OutdatedBrowser à la liste des fournisseurs de services.
  * ex.
  * <?php
  * ...
@@ -37,10 +34,10 @@ use Illuminate\Support\Arr;
  *      ]
  * ];
  *
- * Configuration :
- * ----------------------------------------------------------------------------------------------------
- * Dans le dossier de config, créer le fichier social.php
- * @see /vendor/presstify-plugins/social/Resources/config/social.php Exemple de configuration
+ * Configuration
+ * ---------------------------------------------------------------------------------------------------------------------
+ * Dans le dossier de config, créer le fichier outdated-browser.php
+ * @see /vendor/presstify-plugins/outdated-browser/Resources/config/outdated-browser.php
  */
 final class OutdatedBrowser
 {
