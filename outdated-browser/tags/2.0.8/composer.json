@@ -1,0 +1,45 @@
+{
+  "name": "presstify-plugins/outdated-browser",
+  "description": "Extension PresstiFy de contrôle et de mise à jour de navigateur internet déprécié.",
+  "type": "presstify-plugin",
+  "keywords": [
+    "presstify",
+    "plugins",
+    "wordpress",
+    "outdated browser",
+    "browser compatibility"
+  ],
+  "homepage": "https://svn.tigreblanc.fr/presstify-plugins/outdated-browser",
+  "time": "2018-11-12",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Jordy Manner",
+      "email": "jordy.manner@milkcreation.fr",
+      "role": "Developper"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "http://composer.tigreblanc.fr/presstify/"
+    }
+  ],
+  "require": {
+    "composer/installers": "~1.0",
+    "presstify/framework": "2.0.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "tiFy\\Plugins\\OutdatedBrowser\\": ""
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "secure-http": false,
+    "sort-packages": true
+  }
+}
