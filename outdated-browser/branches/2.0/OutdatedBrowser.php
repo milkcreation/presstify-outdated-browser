@@ -10,7 +10,7 @@ use Illuminate\Support\Arr;
  * @desc Extension PresstiFy de contrôle et de mise à jour de navigateur internet déprécié.
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package tiFy\Plugins\OutdatedBrowser
- * @version 2.0.8
+ * @version 2.0.9
  *
  * @see http://outdatedbrowser.com/fr
  * @see https://github.com/burocratik/Outdated-Browser/tree/master
@@ -68,15 +68,12 @@ final class OutdatedBrowser
                     config('outdated-browser', [])
                 );
 
-                assets()->setDataJs(
-                    'outdatedBrowser',
-                    [
-                        'bgColor'      => $this->get('bgColor'),
-                        'color'        => $this->get('color'),
-                        'lowerThan'    => $this->get('lowerThan'),
-                        'languagePath' => $this->get('languagePath'),
-                    ]
-                );
+                asset()->setDataJs('outdatedBrowser', [
+                    'bgColor'      => $this->get('bgColor'),
+                    'color'        => $this->get('color'),
+                    'lowerThan'    => $this->get('lowerThan'),
+                    'languagePath' => $this->get('languagePath'),
+                ], true);
 
                 $url = class_info($this)->getUrl();
 
