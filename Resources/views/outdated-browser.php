@@ -3,7 +3,6 @@
  * @var tiFy\View\ViewController $this
  */
 ?>
-
 <div id="outdated" class="tiFyOutdatedBrowser">
     <h6><?php _e('La version de votre navigateur est trop ancienne', 'tify'); ?></h6>
 
