@@ -37,7 +37,7 @@ use Illuminate\Support\Arr;
  * Dans le dossier de config, créer le fichier outdated-browser.php
  * @see /vendor/presstify-plugins/outdated-browser/Resources/config/outdated-browser.php
  */
-final class OutdatedBrowser
+class OutdatedBrowser
 {
     /**
      * Liste des attributs de configuration.
