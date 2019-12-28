@@ -1,6 +1,6 @@
 <?php
 /**
- * @var tiFy\View\ViewController $this
+ * @var tiFy\Contracts\View\PlatesFactory $this
  */
 ?>
 <div id="outdated" class="tiFyOutdatedBrowser">

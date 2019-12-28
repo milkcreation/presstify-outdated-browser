@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Exemple de configuration.
- * @see https://github.com/burocratik/Outdated-Browser/tree/master
- */
-
 return [
     /**
      * Couleur de fond du message.
@@ -32,11 +27,5 @@ return [
      * Chemin absolue vers le gabarit d'affichage personnalisé.
      * ex. your_path/outdatedbrowser/lang/en.html
      */
-    'languagePath'          => '',
-
-    /**
-     * Mise en file automatique des scripts.
-     * {@internal Ajouter "import 'presstify-plugins/outdated-browser/Resources/assets/index';" à votre feuille de style global}
-     */
-    'wp_enqueue_scripts'    => true
+    'languagePath'          => ''
 ];

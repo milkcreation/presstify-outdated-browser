@@ -1,14 +1,16 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Plugins\OutdatedBrowser;
 
 use Illuminate\Support\Arr;
+use tiFy\Support\Proxy\Asset;
+use tiFy\Support\Proxy\View;
 
 /**
  * @desc Extension PresstiFy de contrôle et de mise à jour de navigateur internet déprécié.
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package tiFy\Plugins\OutdatedBrowser
- * @version 2.0.13
+ * @version 2.0.14
  *
  * @see http://outdatedbrowser.com/fr
  * @see https://github.com/burocratik/Outdated-Browser/tree/master
@@ -47,8 +49,7 @@ class OutdatedBrowser
         'bgColor'               => '#F25648',
         'color'                 => '#FFF',
         'lowerThan'             => 'borderImage',
-        'languagePath'          => '',
-        'wp_enqueue_scripts'    => true
+        'languagePath'          => ''
     ];
 
     /**
@@ -58,68 +59,22 @@ class OutdatedBrowser
      */
     public function __construct()
     {
-        add_action(
-            'init',
-            function () {
-                $this->attributes = array_merge(
-                    $this->attributes,
-                    config('outdated-browser', [])
-                );
+        add_action('init', function () {
+            $this->attributes = array_merge($this->attributes, config('outdated-browser', []));
 
-                asset()->setDataJs('outdatedBrowser', [
-                    'bgColor'      => $this->get('bgColor'),
-                    'color'        => $this->get('color'),
-                    'lowerThan'    => $this->get('lowerThan'),
-                    'languagePath' => $this->get('languagePath'),
-                ], true);
+            Asset::setDataJs('outdatedBrowser', [
+                'bgColor'      => $this->get('bgColor'),
+                'color'        => $this->get('color'),
+                'lowerThan'    => $this->get('lowerThan'),
+                'languagePath' => $this->get('languagePath'),
+            ], true);
+        });
 
-                $url = class_info($this)->getUrl();
-
-                wp_register_style(
-                    'outdatedBrowser',
-                    $url . '/Resources/assets/css/outdatedbrowser.min.css',
-                    [],
-                    '1.1.2'
-                );
-
-                wp_register_style(
-                    'tiFyOutdatedBrowser',
-                    $url . '/Resources/assets/css/styles.css',
-                    ['outdatedBrowser'],
-                    180829
-                );
-
-                wp_register_script(
-                    'tiFyOutdatedBrowser',
-                    $url . '/Resources/assets/js/scripts.min.js',
-                    [],
-                    180829,
-                    true
-                );
+        add_action('wp_footer', function () {
+            if (!$this->get('languagePath')) {
+                echo View::getPlatesEngine()->setDirectory(__DIR__ . '/Resources/views')->render('outdated-browser');
             }
-        );
-
-        add_action(
-            'wp_enqueue_scripts',
-            function () {
-                if ($this->get('wp_enqueue_scripts')) :
-                    wp_enqueue_style('tiFyOutdatedBrowser');
-                    wp_enqueue_script('tiFyOutdatedBrowser');
-                endif;
-            }
-        );
-
-        add_action(
-            'wp_footer',
-            function () {
-                if (!$this->get('languagePath')) :
-                    echo view()
-                        ->setDirectory(__DIR__ . '/Resources/views')
-                        ->render('outdated-browser');
-                endif;
-            },
-            999999
-        );
+        }, 999999);
     }
 
     /**
