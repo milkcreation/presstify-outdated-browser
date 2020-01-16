@@ -10,7 +10,7 @@
     "browser compatibility"
   ],
   "homepage": "https://svn.tigreblanc.fr/presstify-plugins/outdated-browser",
-  "time": "2019-12-11",
+  "time": "2020-01-15",
   "license": "proprietary",
   "authors": [
     {
@@ -22,7 +22,7 @@
   "repositories": [
     {
       "type": "composer",
-      "url": "http://composer.tigreblanc.fr/presstify/"
+      "url": "https://composer.tigreblanc.fr/presstify"
     }
   ],
   "require": {
