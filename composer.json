@@ -10,7 +10,7 @@
     "browser compatibility"
   ],
   "homepage": "https://svn.tigreblanc.fr/presstify-plugins/outdated-browser",
-  "time": "2020-01-15",
+  "time": "2020-02-07",
   "license": "proprietary",
   "authors": [
     {
@@ -39,7 +39,6 @@
   "config": {
     "optimize-autoloader": true,
     "preferred-install": "dist",
-    "secure-http": false,
     "sort-packages": true
   }
 }
