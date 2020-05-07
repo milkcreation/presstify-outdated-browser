@@ -4,16 +4,14 @@
  */
 ?>
 <div id="outdated" class="tiFyOutdatedBrowser">
-    <h6><?php _e('La version de votre navigateur est trop ancienne', 'tify'); ?></h6>
+    <div class="OutdatedBrowser-title"><?php _e('La version de votre navigateur est trop ancienne', 'tify'); ?></div>
 
-    <p>
+    <p class="OutdatedBrowser-text">
         <?php _e('Vous ne pourrez pas afficher de manière optimale le contenu de ce site.', 'tify'); ?>
-        <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/fr" target="_blank">
+        <a class="OutdatedBrowser-upload" href="http://outdatedbrowser.com/fr" target="_blank">
             <?php _e('Télécharger', 'tify'); ?>
         </a>
     </p>
 
-    <p class="last">
-        <a href="#" id="btnCloseUpdateBrowser" title="<?php _e('Fermer', 'tify'); ?>">&times;</a>
-    </p>
+    <a href="#" class="OutdatedBrowser-close" title="<?php _e('Fermer', 'tify'); ?>">&times;</a>
 </div>
