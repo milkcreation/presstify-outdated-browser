@@ -1,132 +1,89 @@
-<?php
-
-/**
- * @name Outdated Browser
- * @desc Extension PresstiFy de contrôle et de mise à jour de navigateur internet obsolète..
- * @author Jordy Manner <jordy@milkcreation.fr>
- * @package presstiFy
- * @namespace \tiFy\Plugins\AdminUi
- * @version 2.0.1
- */
+<?php declare(strict_types=1);
 
 namespace tiFy\Plugins\OutdatedBrowser;
 
-use tiFy\Apps\AppController;
+use Illuminate\Support\Arr;
+use tiFy\Support\Proxy\Asset;
+use tiFy\Support\Proxy\View;
 
 /**
+ * @desc Extension PresstiFy de contrôle et de mise à jour de navigateur internet déprécié.
+ * @author Jordy Manner <jordy@milkcreation.fr>
+ * @package tiFy\Plugins\OutdatedBrowser
+ * @version 2.0.17
+ *
  * @see http://outdatedbrowser.com/fr
  * @see https://github.com/burocratik/Outdated-Browser/tree/master
  *
- * Lower Than (<):
- * "IE11","borderImage"
- * "IE10", "transform" (Default property)
- * "IE9", "boxShadow"
- * "IE8", "borderSpacing"
+ * USAGE :
+ * Activation
+ * ---------------------------------------------------------------------------------------------------------------------
+ * Dans config/app.php 
+ * >> ajouter OutdatedBrowser à la liste des fournisseurs de services.
+ * <?php
+ *
+ * return [
+ *      ...
+ *      'providers' => [
+ *          ...
+ *          tiFy\Plugins\OutdatedBrowser\OutdatedBrowser::class
+ *          ...
+ *      ]
+ * ];
+ *
+ * Configuration
+ * ---------------------------------------------------------------------------------------------------------------------
+ * Dans le dossier de config, créer le fichier outdated-browser.php
+ * @see /vendor/presstify-plugins/outdated-browser/Resources/config/outdated-browser.php
  */
-final class OutdatedBrowser extends AppController
+class OutdatedBrowser
 {
     /**
      * Liste des attributs de configuration.
      * @var array
      */
     protected $attributes = [
-        'bgColor'      => '#F25648',
-        'color'        => '#FFF',
-        'lowerThan'    => 'transform',
-        'languagePath' => '',
-        'wp_enqueue'   => true,
+        'bgColor'               => '#F25648',
+        'color'                 => '#FFF',
+        'lowerThan'             => 'borderImage',
+        'languagePath'          => ''
     ];
 
     /**
-     * Initialisation du controleur.
+     * CONSTRUCTEUR.
      *
      * @return void
      */
-    public function appBoot()
+    public function __construct()
     {
-        $this->appTemplates(
-            ['directory' => $this->appDirname() . '/templates']
-        );
+        add_action('init', function () {
+            $this->attributes = array_merge($this->attributes, config('outdated-browser', []));
 
-        $this->appAddAction('init');
-        $this->appAddAction('wp_enqueue_scripts');
-        $this->appAddAction('wp_footer', null, 99);
+            Asset::setDataJs('outdatedBrowser', [
+                'bgColor'      => $this->get('bgColor'),
+                'color'        => $this->get('color'),
+                'lowerThan'    => $this->get('lowerThan'),
+                'languagePath' => $this->get('languagePath'),
+            ], true);
+        });
+
+        add_action('wp_footer', function () {
+            if (!$this->get('languagePath')) {
+                echo View::getPlatesEngine()->setDirectory(__DIR__ . '/Resources/views')->render('outdated-browser');
+            }
+        }, 999999);
     }
 
     /**
-     * Initialisation globale de Wordpress.
+     * Récupération d'un attribut de configuration.
      *
-     * @return void
-     */
-    public function init()
-    {
-        $this->appSet(
-            'config',
-            array_merge(
-                $this->attributes,
-                $this->appConfig()
-            )
-        );
-        $this->appAssets()->setDataJs(
-            'outdatedBrowser',
-            [
-                'bgColor'      => $this->appConfig('bgColor'),
-                'color'        => $this->appConfig('color'),
-                'lowerThan'    => $this->appConfig('lowerThan'),
-                'languagePath' => $this->appConfig('languagePath'),
-            ]
-        );
-
-        \wp_register_style(
-            'outdatedBrowser',
-            '//cdn.rawgit.com/burocratik/outdated-browser/develop/outdatedbrowser/outdatedbrowser.min.css',
-            [],
-            '1.1.2'
-        );
-        \wp_register_style(
-            'tiFyPluginOutdatedBrowser',
-            $this->appUrl() . '/assets/css/styles.css',
-            ['outdatedBrowser'],
-            290518
-        );
-        \wp_register_script(
-            'outdatedBrowser',
-            '//cdn.rawgit.com/burocratik/outdated-browser/develop/outdatedbrowser/outdatedbrowser.min.js',
-            [],
-            '1.1.2',
-            true
-        );
-        \wp_register_script(
-            'tiFyPluginOutdatedBrowser',
-            $this->appUrl() . '/assets/js/scripts.js',
-            ['outdatedBrowser'],
-            290518,
-            true
-        );
-    }
-
-    /**
-     * Mise en file des scripts de l'interface utilisateurs.
+     * @param string $key Clé d'indice de l'attribut. Syntaxe à point permise.
+     * @param mixed $defaults Valeur de retour par défaut.
      *
-     * @return void
+     * @return mixed
      */
-    public function wp_enqueue_scripts()
+    public function get($key, $defaults = null)
     {
-        if ($this->appConfig('wp_enqueue')) :
-            \wp_enqueue_style('tiFyPluginOutdatedBrowser');
-            \wp_enqueue_script('tiFyPluginOutdatedBrowser');
-        endif;
-    }
-
-    /**
-     * Scripts du pied de page.
-     *
-     * @return void
-     */
-    public function wp_footer()
-    {
-        if (!$this->appConfig('languagePath')) :
-            echo $this->appTemplateRender('outdated-browser');
-        endif;
+        return Arr::get($this->attributes, $key, $defaults);
     }
 }
