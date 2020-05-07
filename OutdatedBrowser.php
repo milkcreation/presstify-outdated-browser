@@ -10,7 +10,7 @@ use tiFy\Support\Proxy\View;
  * @desc Extension PresstiFy de contrôle et de mise à jour de navigateur internet déprécié.
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package tiFy\Plugins\OutdatedBrowser
- * @version 2.0.16
+ * @version 2.0.17
  *
  * @see http://outdatedbrowser.com/fr
  * @see https://github.com/burocratik/Outdated-Browser/tree/master
@@ -18,18 +18,15 @@ use tiFy\Support\Proxy\View;
  * USAGE :
  * Activation
  * ---------------------------------------------------------------------------------------------------------------------
- * Dans config/app.php ajouter \tiFy\Plugins\OutdatedBrowser\OutdatedBrowser à la liste des fournisseurs de services.
- * ex.
+ * Dans config/app.php 
+ * >> ajouter OutdatedBrowser à la liste des fournisseurs de services.
  * <?php
- * ...
- * use tiFy\Plugins\OutdatedBrowser\OutdatedBrowser;
- * ...
  *
  * return [
  *      ...
  *      'providers' => [
  *          ...
- *          OutdatedBrowser::class
+ *          tiFy\Plugins\OutdatedBrowser\OutdatedBrowser::class
  *          ...
  *      ]
  * ];
