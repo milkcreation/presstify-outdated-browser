@@ -10,7 +10,7 @@ use tiFy\Support\Proxy\View;
  * @desc Extension PresstiFy de contrôle et de mise à jour de navigateur internet déprécié.
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package tiFy\Plugins\OutdatedBrowser
- * @version 2.0.17
+ * @version 2.0.18
  *
  * @see http://outdatedbrowser.com/fr
  * @see https://github.com/burocratik/Outdated-Browser/tree/master

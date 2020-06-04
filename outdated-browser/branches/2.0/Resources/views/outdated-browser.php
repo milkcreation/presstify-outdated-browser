@@ -8,7 +8,7 @@
 
     <p class="OutdatedBrowser-text">
         <?php _e('Vous ne pourrez pas afficher de manière optimale le contenu de ce site.', 'tify'); ?>
-        <a class="OutdatedBrowser-upload" href="http://outdatedbrowser.com/fr" target="_blank">
+        <a class="OutdatedBrowser-upload" href="http://outdatedbrowser.com/fr" target="_blank" rel="noreferrer">
             <?php _e('Télécharger', 'tify'); ?>
         </a>
     </p>
