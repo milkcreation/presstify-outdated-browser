@@ -13,5 +13,5 @@
         </a>
     </p>
 
-    <button aria-label="<?php __('Fermer', 'tify'); ?>" class="OutdatedBrowser-close">&times;</button>
+    <button aria-label="<?php __('Fermer', 'tify'); ?>" id="outdated--close" class="OutdatedBrowser-close">&times;</button>
 </div>

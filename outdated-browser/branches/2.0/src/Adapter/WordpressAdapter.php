@@ -19,7 +19,7 @@ class WordpressAdapter implements OutdatedBrowserAdapter
     {
         $this->setOutdatedBrowser($outdatedBrowser);
 
-        if ($this->ob()->config('wordpress.auto') === true) {
+        if ($this->ob()->config('wordpress.autoload', true) === true) {
             add_action('wp_footer', function () {
                 echo $this->ob();
             }, 999999);

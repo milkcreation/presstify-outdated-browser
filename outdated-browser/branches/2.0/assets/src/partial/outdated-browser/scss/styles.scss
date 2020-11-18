@@ -41,6 +41,7 @@
     text-decoration: none;
     border: 2px solid $outdated-border-color;
     cursor: pointer;
+    transition: background-color 300ms ease-in-out, color 300ms ease-in-out;
 
     &:hover {
       color: $outdated-hover-color;
@@ -52,19 +53,24 @@
     position: absolute;
     top: 10px;
     right: 25px;
-    width: 36px;
-    height: 36px;
+    padding: 0 13px;
     text-decoration: none;
-
+    background-color: transparent;
     font-size: 36px;
-    line-height: 36px;
+    line-height: 0.8;
+    vertical-align: top;
+    border:none;
 
     &,
-    &:visited,
-    &:hover,
+    &:active,
     &:focus,
-    &:active {
+    &:hover,
+    &:visited{
       color: $outdated-close-color;
+    }
+
+    &:hover {
+      transform: scale(1.2);
     }
   }
 }
