@@ -12,13 +12,13 @@ return [
      *      'IE8', 'borderSpacing'
      * }
      */
-    'lowerThan' => 'borderImage',
+    'lowerThan' => 'Edge',
 
     /**
      * Configuration de Wordpress
      */
     'wordpress' => [
         // Chargement automatique
-        'auto' => true,
+        'autoload' => true,
     ],
 ];
