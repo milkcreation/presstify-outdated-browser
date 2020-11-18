@@ -1,10 +1,10 @@
 <?php
 /**
- * @var tiFy\Contracts\View\PlatesFactory $this
+ * @var tiFy\Contracts\Partial\PartialView
  */
 ?>
 <div id="outdated" class="tiFyOutdatedBrowser">
-    <div class="OutdatedBrowser-title"><?php _e('La version de votre navigateur est trop ancienne', 'tify'); ?></div>
+    <div class="OutdatedBrowser-title"><?php _e('La version de votre navigateur est obsolète.', 'tify'); ?></div>
 
     <p class="OutdatedBrowser-text">
         <?php _e('Vous ne pourrez pas afficher de manière optimale le contenu de ce site.', 'tify'); ?>
@@ -13,5 +13,5 @@
         </a>
     </p>
 
-    <a href="#" class="OutdatedBrowser-close" title="<?php _e('Fermer', 'tify'); ?>">&times;</a>
+    <button aria-label="<?php __('Fermer', 'tify'); ?>" class="OutdatedBrowser-close">&times;</button>
 </div>

@@ -1,15 +1,13 @@
-$outdated-colors: (
-    primary: #F25648,
-    regular:#FFFFFF
-) !default;
+// Variables
+@import "variables";
 
-
+// Personnalisation
 * html #outdated {
   position: absolute;
 }
 
 #outdated {
-  display:none;
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
@@ -18,8 +16,8 @@ $outdated-colors: (
   text-align: center;
   text-transform: uppercase;
   z-index: 9999999;
-  background-color: map_get($outdated-colors, primary);
-  color: map_get($outdated-colors, regular);
+  background-color: $outdated-background-color;
+  color: $outdated-color;
 
   .OutdatedBrowser-title {
     font-size: 25px;
@@ -39,14 +37,14 @@ $outdated-colors: (
     padding: 10px 20px;
     margin: 30px auto 0;
     width: 230px; /*need for IE*/
-    color: map_get($outdated-colors, regular);
+    color: $outdated-color;
     text-decoration: none;
-    border: 2px solid map_get($outdated-colors, regular);
+    border: 2px solid $outdated-border-color;
     cursor: pointer;
 
     &:hover {
-      color: map_get($outdated-colors, primary);
-      background-color: map_get($outdated-colors, regular);
+      color: $outdated-hover-color;
+      background-color: $outdated-hover-background-color;
     }
   }
 
@@ -66,7 +64,7 @@ $outdated-colors: (
     &:hover,
     &:focus,
     &:active {
-      color: map_get($outdated-colors, regular);
+      color: $outdated-close-color;
     }
   }
 }
