@@ -1,10 +1,10 @@
-"use strict";
+'use strict'
 
 let outdatedBrowser = function(options) {
-    let self = outdatedBrowser;
+    let self = outdatedBrowser
 
     //Variable definition (before ajax)
-    let outdated = document.getElementById("outdated");
+    let outdated = document.getElementById("outdated")
 
     // Default settings
     self.defaultOpts = {
@@ -247,6 +247,7 @@ function addLoadEvent(func) {
     }
 }
 
+/*
 addLoadEvent(function(){
     outdatedBrowser({
         bgColor: tify.outdatedBrowser.bgColor,
@@ -254,4 +255,4 @@ addLoadEvent(function(){
         lowerThan: tify.outdatedBrowser.lowerThan,
         languagePath: tify.outdatedBrowser.languagePath
     });
-});
+}); */
