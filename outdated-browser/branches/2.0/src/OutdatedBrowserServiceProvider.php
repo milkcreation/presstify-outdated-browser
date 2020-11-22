@@ -23,15 +23,7 @@ class OutdatedBrowserServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->getContainer()->share('outdated-browser', function () {
-            return new OutdatedBrowser(config('outdated-browser', []), $this->getContainer());
-        });
-
-        if (($wp = $this->getContainer()->get('wp')) && $wp->is()) {
-            $this->getContainer()->share('outdated-browser.wp-adapter', function () {
-                return new WordpressAdapter($this->getContainer()->get('outdated-browser'));
-            });
-
+        events()->listen('wp.booted', function () {
             /** @var OutdatedBrowserContract $cookieLaw */
             $ob = $this->getContainer()->get('outdated-browser');
 
@@ -40,6 +32,20 @@ class OutdatedBrowserServiceProvider extends ServiceProvider
             }
 
             $ob->boot();
-        }
+        });
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function register(): void
+    {
+        $this->getContainer()->share('outdated-browser', function () {
+            return new OutdatedBrowser(config('outdated-browser', []), $this->getContainer());
+        });
+
+        $this->getContainer()->share('outdated-browser.wp-adapter', function () {
+            return new WordpressAdapter($this->getContainer()->get('outdated-browser'));
+        });
     }
 }
