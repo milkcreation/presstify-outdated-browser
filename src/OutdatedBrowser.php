@@ -21,7 +21,7 @@ class OutdatedBrowser implements OutdatedBrowserContract
     private static $instance;
 
     /**
-     * Indicateur d'initialisation.
+     * Indicateur de chargement.
      * @var bool
      */
     private $booted = false;
@@ -84,7 +84,7 @@ class OutdatedBrowser implements OutdatedBrowserContract
             return self::$instance;
         }
 
-        throw new Exception('Unavailable OutdatedBrowser instance');
+        throw new Exception(sprintf('Unavailable %s instance', __CLASS__));
     }
 
     /**

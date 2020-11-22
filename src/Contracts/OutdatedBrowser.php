@@ -26,7 +26,7 @@ interface OutdatedBrowser
     public function __toString(): string;
 
     /**
-     * Initialisation.
+     * Chargement.
      *
      * @return static
      */
