@@ -2,18 +2,24 @@
 
 namespace tiFy\Plugins\OutdatedBrowser;
 
-use Exception;
+use RuntimeException;
 use Psr\Container\ContainerInterface as Container;
 use tiFy\Contracts\Filesystem\LocalFilesystem;
+use tiFy\Contracts\Partial\Partial as PartialManagerContract;
+use tiFy\Partial\Partial as PartialManager;
 use tiFy\Plugins\OutdatedBrowser\Contracts\OutdatedBrowser as OutdatedBrowserContract;
 use tiFy\Plugins\OutdatedBrowser\Contracts\OutdatedBrowserAdapter;
+use tiFy\Plugins\OutdatedBrowser\Contracts\OutdatedBrowserPartial as OutdatedBrowserPartialContract;
 use tiFy\Plugins\OutdatedBrowser\Partial\OutdatedBrowserPartial;
+use tiFy\Support\Concerns\BootableTrait;
+use tiFy\Support\Concerns\ContainerAwareTrait;
 use tiFy\Support\ParamsBag;
-use tiFy\Support\Proxy\Partial;
 use tiFy\Support\Proxy\Storage;
 
 class OutdatedBrowser implements OutdatedBrowserContract
 {
+    use BootableTrait, ContainerAwareTrait;
+
     /**
      * Instance de la classe.
      * @var static|null
@@ -21,16 +27,16 @@ class OutdatedBrowser implements OutdatedBrowserContract
     private static $instance;
 
     /**
-     * Indicateur de chargement.
-     * @var bool
-     */
-    private $booted = false;
-
-    /**
      * Liste des services par défaut fournis par conteneur d'injection de dépendances.
      * @var array
      */
     private $defaultProviders = [];
+
+    /**
+     * Instance du gestionnaire de portion d'affichage.
+     * @var PartialManagerContract
+     */
+    private $partialManager;
 
     /**
      * Instance du gestionnaire des ressources
@@ -51,12 +57,6 @@ class OutdatedBrowser implements OutdatedBrowserContract
     protected $config;
 
     /**
-     * Instance du conteneur d'injection de dépendances.
-     * @var Container|null
-     */
-    protected $container;
-
-    /**
      * @param array $config
      * @param Container|null $container
      *
@@ -69,6 +69,9 @@ class OutdatedBrowser implements OutdatedBrowserContract
         if (!is_null($container)) {
             $this->setContainer($container);
         }
+
+        $this->partialManager = $this->containerHas(PartialManagerContract::class)
+            ? $this->containerGet(PartialManagerContract::class) : new PartialManager();
 
         if (!self::$instance instanceof static) {
             self::$instance = $this;
@@ -83,8 +86,7 @@ class OutdatedBrowser implements OutdatedBrowserContract
         if (self::$instance instanceof self) {
             return self::$instance;
         }
-
-        throw new Exception(sprintf('Unavailable %s instance', __CLASS__));
+        throw new RuntimeException(sprintf('Unavailable %s instance', __CLASS__));
     }
 
     /**
@@ -92,7 +94,7 @@ class OutdatedBrowser implements OutdatedBrowserContract
      */
     public function __toString(): string
     {
-        return Partial::get('outdated-browser', ['lowerThan' => $this->config('lowerThan', 'borderImage')])->render();
+        return $this->partialManager->get('outdated-browser', ['lowerThan' => $this->config('lowerThan', 'borderImage')])->render();
     }
 
     /**
@@ -100,12 +102,16 @@ class OutdatedBrowser implements OutdatedBrowserContract
      */
     public function boot(): OutdatedBrowserContract
     {
-        if (!$this->booted) {
-            Partial::register('outdated-browser', (new OutdatedBrowserPartial())->setOutdatedBrowser($this));
+        if (!$this->isBooted()) {
+            $this->partialManager->register(
+                'outdated-browser',
+                $this->containerHas(OutdatedBrowserPartialContract::class)
+                    ? $this->containerGet(OutdatedBrowserPartialContract::class)
+                    : (new OutdatedBrowserPartial($this, $this->partialManager))
+            );
 
-            $this->booted = true;
+            $this->setBooted();
         }
-
         return $this;
     }
 
@@ -130,14 +136,6 @@ class OutdatedBrowser implements OutdatedBrowserContract
     /**
      * @inheritDoc
      */
-    public function getContainer(): ?Container
-    {
-        return $this->container;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function getProvider(string $name)
     {
         return $this->config("providers.{$name}", $this->defaultProviders[$name] ?? null);
@@ -146,28 +144,11 @@ class OutdatedBrowser implements OutdatedBrowserContract
     /**
      * @inheritDoc
      */
-    public function resolve(string $alias)
-    {
-        return ($container = $this->getContainer()) ? $container->get("outdated-browser.{$alias}") : null;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function resolvable(string $alias): bool
-    {
-        return ($container = $this->getContainer()) && $container->has("outdated-browser.{$alias}");
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function resources(?string $path = null)
     {
         if (!isset($this->resources) ||is_null($this->resources)) {
-            $this->resources = Storage::local(dirname(__DIR__));
+            $this->resources = Storage::local(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'resources');
         }
-
         return is_null($path) ? $this->resources : $this->resources->path($path);
     }
 
@@ -187,16 +168,6 @@ class OutdatedBrowser implements OutdatedBrowserContract
     public function setConfig(array $attrs): OutdatedBrowserContract
     {
         $this->config($attrs);
-
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setContainer(Container $container): OutdatedBrowserContract
-    {
-        $this->container = $container;
 
         return $this;
     }
