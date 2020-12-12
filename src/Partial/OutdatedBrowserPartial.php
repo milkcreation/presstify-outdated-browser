@@ -2,23 +2,37 @@
 
 namespace tiFy\Plugins\OutdatedBrowser\Partial;
 
+use tiFy\Contracts\Partial\Partial as PartialManager;
 use tiFy\Partial\PartialDriver;
+use tiFy\Plugins\OutdatedBrowser\Contracts\OutdatedBrowser;
+use tiFy\Plugins\OutdatedBrowser\Contracts\OutdatedBrowserPartial as OutdatedBrowserPartialContract;
 use tiFy\Plugins\OutdatedBrowser\OutdatedBrowserAwareTrait;
 
-class OutdatedBrowserPartial extends PartialDriver
+class OutdatedBrowserPartial extends PartialDriver implements OutdatedBrowserPartialContract
 {
     use OutdatedBrowserAwareTrait;
 
     /**
+     * @param OutdatedBrowser $outdatedBrowser
+     * @param PartialManager $partialManager
+     */
+    public function __construct(OutdatedBrowser $outdatedBrowser, PartialManager $partialManager)
+    {
+        $this->setOutdatedBrowser($outdatedBrowser);
+
+        parent::__construct($partialManager);
+    }
+
+    /**
      * @inheritDoc
      */
-    public function defaults(): array
+    public function defaultParams(): array
     {
-        return [
+        return array_merge(parent::defaultParams(), [
             'bgColor'               => '#F25648',
             'color'                 => '#FFF',
             'lowerThan'             => 'borderImage'
-        ];
+        ]);
     }
 
     /**

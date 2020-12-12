@@ -2,8 +2,12 @@
 
 namespace tiFy\Plugins\OutdatedBrowser;
 
-use tiFy\Plugins\OutdatedBrowser\Adapter\WordpressAdapter;
+use tiFy\Contracts\Partial\Partial as PartialManagerContract;
+use tiFy\Plugins\OutdatedBrowser\Adapter\OutdatedBrowserWordpressAdapter;
 use tiFy\Plugins\OutdatedBrowser\Contracts\OutdatedBrowser as OutdatedBrowserContract;
+use tiFy\Plugins\OutdatedBrowser\Contracts\OutdatedBrowserPartial as OutdatedBrowserPartialContract;
+use tiFy\Plugins\OutdatedBrowser\Contracts\OutdatedBrowserWordpressAdapter as OBrowserWpAdapterContract;
+use tiFy\Plugins\OutdatedBrowser\Partial\OutdatedBrowserPartial;
 use tiFy\Container\ServiceProvider;
 
 class OutdatedBrowserServiceProvider extends ServiceProvider
@@ -14,8 +18,9 @@ class OutdatedBrowserServiceProvider extends ServiceProvider
      * @var string[]
      */
     protected $provides = [
-        'outdated-browser',
-        'outdated-browser.wp-adapter',
+        OutdatedBrowserContract::class,
+        OutdatedBrowserPartialContract::class,
+        OBrowserWpAdapterContract::class,
     ];
 
     /**
@@ -24,14 +29,14 @@ class OutdatedBrowserServiceProvider extends ServiceProvider
     public function boot(): void
     {
         events()->listen('wp.booted', function () {
-            /** @var OutdatedBrowserContract $cookieLaw */
-            $ob = $this->getContainer()->get('outdated-browser');
+            /** @var OutdatedBrowserContract $obrowser */
+            $obrowser = $this->getContainer()->get(OutdatedBrowserContract::class);
 
-            if ($adapter = $ob->resolve('wp-adapter')) {
-                $ob->setAdapter($adapter);
+            if ($obrowser->containerHas(OBrowserWpAdapterContract::class)) {
+                $obrowser->setAdapter($obrowser->containerGet(OBrowserWpAdapterContract::class));
             }
 
-            $ob->boot();
+            $obrowser->boot();
         });
     }
 
@@ -40,12 +45,38 @@ class OutdatedBrowserServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->getContainer()->share('outdated-browser', function () {
+        $this->getContainer()->share(OutdatedBrowserContract::class, function (): OutdatedBrowserContract {
             return new OutdatedBrowser(config('outdated-browser', []), $this->getContainer());
         });
 
-        $this->getContainer()->share('outdated-browser.wp-adapter', function () {
-            return new WordpressAdapter($this->getContainer()->get('outdated-browser'));
+        $this->registerAdapters();
+        $this->registerPartials();
+    }
+
+    /**
+     * Déclaration des adapteurs.
+     *
+     * @return void
+     */
+    public function registerAdapters(): void
+    {
+        $this->getContainer()->share(OBrowserWpAdapterContract::class, function (): OBrowserWpAdapterContract {
+            return new OutdatedBrowserWordpressAdapter($this->getContainer()->get(OutdatedBrowserContract::class));
+        });
+    }
+
+    /**
+     * Déclaration des pilote de portion d'affichage.
+     *
+     * @return void
+     */
+    public function registerPartials(): void
+    {
+        $this->getContainer()->add(OutdatedBrowserPartialContract::class, function (): OutdatedBrowserPartialContract {
+            return new OutdatedBrowserPartial(
+                $this->getContainer()->get(OutdatedBrowserContract::class),
+                $this->getContainer()->get(PartialManagerContract::class)
+            );
         });
     }
 }
