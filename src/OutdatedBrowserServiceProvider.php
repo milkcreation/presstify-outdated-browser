@@ -28,7 +28,7 @@ class OutdatedBrowserServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        events()->listen('wp.booted', function () {
+        events()->on('wp.booted', function () {
             /** @var OutdatedBrowserContract $obrowser */
             $obrowser = $this->getContainer()->get(OutdatedBrowserContract::class);
 
