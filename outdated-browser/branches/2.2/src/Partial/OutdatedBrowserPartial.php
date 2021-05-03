@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace tiFy\Plugins\OutdatedBrowser\Partial;
 
-use tiFy\Contracts\Partial\Partial as PartialManager;
-use tiFy\Partial\PartialDriver;
+use Pollen\Partial\PartialDriver;
+use Pollen\Partial\PartialManagerInterface;
 use tiFy\Plugins\OutdatedBrowser\Contracts\OutdatedBrowser;
 use tiFy\Plugins\OutdatedBrowser\Contracts\OutdatedBrowserPartial as OutdatedBrowserPartialContract;
 use tiFy\Plugins\OutdatedBrowser\OutdatedBrowserAwareTrait;
@@ -14,9 +16,9 @@ class OutdatedBrowserPartial extends PartialDriver implements OutdatedBrowserPar
 
     /**
      * @param OutdatedBrowser $outdatedBrowser
-     * @param PartialManager $partialManager
+     * @param PartialManagerInterface $partialManager
      */
-    public function __construct(OutdatedBrowser $outdatedBrowser, PartialManager $partialManager)
+    public function __construct(OutdatedBrowser $outdatedBrowser, PartialManagerInterface $partialManager)
     {
         $this->setOutdatedBrowser($outdatedBrowser);
 

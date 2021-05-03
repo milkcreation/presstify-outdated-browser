@@ -1,12 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace tiFy\Plugins\OutdatedBrowser;
 
+use Pollen\Support\Proxy\PartialProxy;
 use RuntimeException;
 use Psr\Container\ContainerInterface as Container;
 use tiFy\Contracts\Filesystem\LocalFilesystem;
-use tiFy\Contracts\Partial\Partial as PartialManagerContract;
-use tiFy\Partial\Partial as PartialManager;
 use tiFy\Plugins\OutdatedBrowser\Contracts\OutdatedBrowser as OutdatedBrowserContract;
 use tiFy\Plugins\OutdatedBrowser\Contracts\OutdatedBrowserAdapter;
 use tiFy\Plugins\OutdatedBrowser\Contracts\OutdatedBrowserPartial as OutdatedBrowserPartialContract;
@@ -18,7 +19,9 @@ use tiFy\Support\Proxy\Storage;
 
 class OutdatedBrowser implements OutdatedBrowserContract
 {
-    use BootableTrait, ContainerAwareTrait;
+    use BootableTrait;
+    use ContainerAwareTrait;
+    use PartialProxy;
 
     /**
      * Instance de la classe.
@@ -31,12 +34,6 @@ class OutdatedBrowser implements OutdatedBrowserContract
      * @var array
      */
     private $defaultProviders = [];
-
-    /**
-     * Instance du gestionnaire de portion d'affichage.
-     * @var PartialManagerContract
-     */
-    private $partialManager;
 
     /**
      * Instance du gestionnaire des ressources
@@ -70,9 +67,6 @@ class OutdatedBrowser implements OutdatedBrowserContract
             $this->setContainer($container);
         }
 
-        $this->partialManager = $this->containerHas(PartialManagerContract::class)
-            ? $this->containerGet(PartialManagerContract::class) : new PartialManager();
-
         if (!self::$instance instanceof static) {
             self::$instance = $this;
         }
@@ -94,7 +88,9 @@ class OutdatedBrowser implements OutdatedBrowserContract
      */
     public function __toString(): string
     {
-        return $this->partialManager->get('outdated-browser', ['lowerThan' => $this->config('lowerThan', 'borderImage')])->render();
+        return $this->partial()
+                    ->get('outdated-browser', ['lowerThan' => $this->config('lowerThan', 'borderImage')])
+                    ->render();
     }
 
     /**
@@ -103,11 +99,11 @@ class OutdatedBrowser implements OutdatedBrowserContract
     public function boot(): OutdatedBrowserContract
     {
         if (!$this->isBooted()) {
-            $this->partialManager->register(
+            $this->partial()->register(
                 'outdated-browser',
                 $this->containerHas(OutdatedBrowserPartialContract::class)
                     ? $this->containerGet(OutdatedBrowserPartialContract::class)
-                    : (new OutdatedBrowserPartial($this, $this->partialManager))
+                    : (new OutdatedBrowserPartial($this, $this->partial()))
             );
 
             $this->setBooted();
@@ -126,11 +122,13 @@ class OutdatedBrowser implements OutdatedBrowserContract
 
         if (is_string($key)) {
             return $this->config->get($key, $default);
-        } elseif (is_array($key)) {
-            return $this->config->set($key);
-        } else {
-            return $this->config;
         }
+
+        if (is_array($key)) {
+            return $this->config->set( $key );
+        }
+        
+        return $this->config;
     }
 
     /**
